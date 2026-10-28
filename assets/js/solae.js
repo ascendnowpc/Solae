@@ -575,18 +575,18 @@ if (pdp) {
   ];
 
   pdp.innerHTML = `
-    <div class="sea">
-      <a class="sea__back" href="shop.html#${port.id}" aria-label="back to ${port.place}">${ICON.prev}</a>
-      <p class="sea__where t-label"><svg aria-hidden="true"><use href="#i-boat"/></svg>${port.place}</p>
+    <div class="stack">
+      <a class="stack__back" href="shop.html#${port.id}" aria-label="back to ${port.place}">${ICON.prev}</a>
+      <p class="stack__where t-label"><svg aria-hidden="true"><use href="#i-boat"/></svg>${port.place}</p>
       <div class="posts" tabindex="0" role="region" aria-roledescription="carousel" aria-label="postcards of ${p.name}">
         ${slides.map((s, i) => `<div class="posts__slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}">${s}</div>`).join("")}
       </div>
-      <div class="sea__bar">
-        <button class="sea__arrow" type="button" data-step="-1" aria-label="previous postcard">${ICON.prev}</button>
-        <div class="sea__dots">${slides.map((_, i) => `<button type="button" data-slide="${i}" aria-label="postcard ${i + 1}"></button>`).join("")}</div>
-        <button class="sea__arrow" type="button" data-step="1" aria-label="next postcard">${ICON.next}</button>
+      <div class="stack__bar">
+        <button class="stack__arrow" type="button" data-step="-1" aria-label="previous postcard">${ICON.prev}</button>
+        <div class="stack__dots">${slides.map((_, i) => `<button type="button" data-slide="${i}" aria-label="postcard ${i + 1}"></button>`).join("")}</div>
+        <button class="stack__arrow" type="button" data-step="1" aria-label="next postcard">${ICON.next}</button>
       </div>
-      <p class="sea__hint t-hand" aria-hidden="true">swipe the postcards</p>
+      <p class="stack__hint t-hand" aria-hidden="true">swipe the postcards</p>
     </div>
     <div class="buy" data-buy-panel></div>`;
 
