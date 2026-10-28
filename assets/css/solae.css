@@ -56,6 +56,8 @@ ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
 .t-eyebrow { font-family: var(--font-body); font-weight: 600; font-size: var(--fs-eyebrow); text-transform: uppercase; letter-spacing: var(--track-eyebrow); line-height: 1.4; }
 .t-script { font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: var(--fs-script); line-height: 1; letter-spacing: -.01em; }
 .t-hand { font-family: var(--font-script); font-weight: 400; font-size: var(--fs-hand); line-height: .9; color: var(--deep); }
+/* gooey wide display (SKIMS, "your hair is thirsty"): Sour Gummy at full width, melted by #f-fluid. big moments only, never under 2.5rem */
+.t-fluid { font-family: var(--font-fluid); font-weight: 900; font-stretch: 125%; text-transform: lowercase; letter-spacing: -.015em; line-height: .92; filter: url(#f-fluid); }
 .t-lead  { font-size: var(--fs-lead); line-height: 1.5; }
 .t-small { font-size: var(--fs-small); }
 .t-soft  { color: var(--ink-soft); }
@@ -177,6 +179,7 @@ a:hover .frame-arch > img { transform: scale(1.04); }
 
 .swatches { display: flex; gap: .4rem; flex-wrap: wrap; }
 .swatch { width: .95rem; height: .95rem; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(7, 73, 74, .2); }
+.swatch-more { font-size: .7rem; font-weight: 700; line-height: .95rem; color: var(--ink-mute); }
 .swatch--lg { width: 2.25rem; height: 2.25rem; border: 0; padding: 0; position: relative; }
 .swatch--lg[aria-checked="true"]::after, .swatch--lg[aria-pressed="true"]::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--deep); }
 .sizes { display: flex; gap: .5rem; flex-wrap: wrap; }
@@ -267,11 +270,14 @@ a:hover .frame-arch > img { transform: scale(1.04); }
   .catmap svg { display: none; }
   .catmap button { position: static; translate: none; border: 1.5px solid var(--line-strong); }
 }
+.catalog__more { display: grid; justify-items: center; gap: .2rem; margin-top: var(--space-xl); }
+.catalog__more .t-hand { color: var(--brick); transform: rotate(-4deg); }
 .grid-products { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, .5rem + 1.8vw, 2.5rem) clamp(.75rem, .4rem + 1.4vw, 2rem); }
 @media (max-width: 1000px) { .grid-products { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 720px) { .grid-products { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 .card { position: relative; display: flex; flex-direction: column; gap: .8rem; text-align: center; }
+.card.reveal { transition-delay: calc(min(var(--i, 0), 6) * 45ms); }
 .card[hidden] { display: none; }
 .card__media { position: relative; }
 .card__media .frame-wavy { aspect-ratio: 4 / 5; }
@@ -464,15 +470,6 @@ a:hover .frame-arch > img { transform: scale(1.04); }
 .crumbs { font-size: var(--fs-small); color: var(--ink-mute); display: flex; gap: .5rem; flex-wrap: wrap; padding-block: var(--space-s); text-transform: lowercase; }
 .crumbs a:hover { color: var(--ink); text-decoration: underline; }
 .pdp { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(1.5rem, 1rem + 3vw, 5rem); align-items: start; }
-.gallery { display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; position: sticky; top: calc(var(--header-h) + 1rem); }
-.gallery__thumbs { display: grid; gap: .75rem; align-content: start; }
-.gallery__thumbs button { border: 2px solid transparent; padding: 3px; border-radius: 10px; background: none; }
-.gallery__thumbs button[aria-pressed="true"] { border-color: var(--deep); }
-.gallery__thumbs .frame { aspect-ratio: 4 / 5; border-radius: 7px; }
-.gallery__main { position: relative; }
-.gallery__main .frame-wavy { aspect-ratio: 4 / 5; --frame-w: 8px; }
-.gallery__main .badge { position: absolute; top: 1.4rem; left: 1.4rem; z-index: 1; }
-.gallery__main .t-hand { position: absolute; right: -.5rem; bottom: -1.2rem; transform: rotate(-6deg); color: var(--brick); z-index: 1; }
 .buy { display: grid; gap: var(--space-m); }
 .buy__title { display: grid; gap: .5rem; }
 .buy__title h1 { font-size: clamp(2.6rem, 1.8rem + 3vw, 4.6rem); }
@@ -504,7 +501,248 @@ a:hover .frame-arch > img { transform: scale(1.04); }
 .acc details[open] summary::after { transform: rotate(45deg); }
 .acc details > div { padding-bottom: 1.2rem; color: var(--ink-soft); }
 .acc ul { padding-left: 1.1rem; display: grid; gap: .35rem; }
-@media (max-width: 900px) { .pdp { grid-template-columns: 1fr; } .gallery { position: static; grid-template-columns: 1fr; } .gallery__thumbs { grid-template-columns: repeat(4, 1fr); order: 2; } }
+@media (max-width: 900px) { .pdp { grid-template-columns: 1fr; } }
+
+/* ---- Product page: a stack of postcards (pins: caprini, lemon stripe short,
+        a postcard from summer, built for warm days) ------------------------- */
+.stack {
+  --paper: var(--white);
+  position: sticky; top: calc(var(--header-h) + 1rem);
+  height: min(calc(100svh - var(--header-h) - 2rem), 54rem); min-height: 32rem;
+}
+.stack__back { position: absolute; top: 1rem; left: 1rem; z-index: 3; display: grid; place-items: center; width: 2.9rem; height: 2.9rem; border-radius: var(--r-sm); background: var(--surface); color: var(--deep); box-shadow: var(--shadow-paper); }
+.stack__back svg { width: 1.3rem; height: 1.3rem; }
+.stack__where { position: absolute; top: 1.35rem; left: 4.6rem; z-index: 3; display: inline-flex; align-items: center; gap: .45rem; padding: .3rem .8rem; border-radius: var(--r-pill); background: var(--surface-sunk); color: var(--deep); }
+.stack__where svg { width: 1.05rem; height: .85rem; color: var(--brick); }
+.stack__hint { position: absolute; right: 1.25rem; top: 1rem; z-index: 3; color: var(--brick); transform: rotate(-5deg); font-size: clamp(1.6rem, 1.3rem + 1vw, 2.3rem); pointer-events: none; }
+.posts { position: absolute; inset: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 100%; grid-template-rows: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+.posts::-webkit-scrollbar { display: none; }
+.posts:focus-visible { outline-offset: -6px; }
+.posts__slide { container-type: size; display: grid; place-items: center; padding: 4.6rem clamp(1rem, 4%, 3rem) 4.9rem; scroll-snap-align: center; scroll-snap-stop: always; }
+.stack__bar { position: absolute; left: 50%; bottom: 1rem; translate: -50% 0; z-index: 3; display: flex; align-items: center; gap: .6rem; padding: .3rem; border-radius: var(--r-pill); background: var(--surface-sunk); }
+.stack__arrow { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 50%; background: var(--deep); color: var(--sand); }
+.stack__arrow svg { width: 1.2rem; height: 1.2rem; }
+.stack__dots { display: flex; gap: .15rem; }
+.stack__dots button { width: 1.5rem; height: 2.75rem; padding: 0; border: 0; background: none; display: grid; place-items: center; }
+.stack__dots button::after { content: ""; width: .5rem; height: .5rem; border-radius: var(--r-pill); background: var(--line-strong); transition: width var(--dur-base) var(--ease-out), background var(--dur-base); }
+.stack__dots button[aria-current="true"]::after { width: 1.25rem; background: var(--deep); }
+
+/* every postcard sizes itself from the slide (cq units) and its type from its own width (cqi) */
+.post { position: relative; container-type: inline-size; color: var(--deep); }
+.post img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.post__perf {
+  --notch: 2.2cqi; background: var(--paper); padding: calc(var(--notch) * 1.5);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle var(--notch) at var(--notch) var(--notch), #0000 98%, #000) calc(var(--notch) * -1) calc(var(--notch) * -1) / calc(var(--notch) * 2) calc(var(--notch) * 2);
+          mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle var(--notch) at var(--notch) var(--notch), #0000 98%, #000) calc(var(--notch) * -1) calc(var(--notch) * -1) / calc(var(--notch) * 2) calc(var(--notch) * 2);
+}
+.post__sheet { background: var(--paper); }
+
+/* 1 · the stamp (lemon stripe short) */
+.post--stamp { width: min(100cqw, 100cqh * .66); rotate: -1.4deg; filter: drop-shadow(0 18px 22px rgba(4, 40, 41, .38)); }
+.post--stamp .post__sheet { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.2cqi; padding: 4cqi 4.5cqi 3.6cqi; box-shadow: inset 0 0 0 .3cqi rgba(7, 73, 74, .14); }
+.post__row { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; }
+.post__row .t-label { font-size: 2.6cqi; color: var(--stormy); }
+.post__num { position: relative; font-family: var(--font-script); font-size: 10cqi; line-height: .8; padding: 1cqi 3cqi 0 2cqi; }
+.post__num::after { content: ""; position: absolute; inset: -1cqi -1cqi -1.4cqi -.5cqi; border: .35cqi solid currentColor; border-radius: 50%; rotate: -7deg; opacity: .7; }
+/* long names shrink to fit the stamp: --len is the character count */
+.post__name { font-size: min(12.5cqi, 92cqi / var(--len)); color: var(--ocean); margin-top: -.5cqi; white-space: nowrap; }
+@container (max-width: 380px) { .post__name { filter: none; } }
+.post__shot { aspect-ratio: 4 / 4.3; overflow: hidden; background: var(--shell); }
+.post__row--foot { align-items: end; font-weight: 600; font-size: 2.6cqi; letter-spacing: .14em; text-transform: uppercase; line-height: 1.3; }
+.post__row--foot span { display: grid; gap: .6cqi; }
+.post__row--foot span:last-child { text-align: right; }
+.post__row--foot b { font-family: var(--font-serif); font-weight: 400; font-size: 5.6cqi; letter-spacing: 0; color: var(--accent); line-height: 1; }
+.post__clip { position: absolute; top: -4.5cqi; right: 10cqi; width: 12cqi; rotate: 14deg; filter: drop-shadow(0 3px 3px rgba(4, 40, 41, .3)); }
+.post__clip-wire { fill: none; stroke: var(--deep); stroke-width: 3.5; stroke-linecap: round; }
+.post__clip-body { fill: var(--coral); stroke: var(--deep); stroke-width: 2; stroke-linejoin: round; }
+.post__clip-shine { stroke: var(--papaya); stroke-width: 2.5; stroke-linecap: round; opacity: .8; }
+
+/* 2 · the photo card (built for warm days) */
+.post--photo { width: min(100cqw, 100cqh * .8); aspect-ratio: 4 / 5; overflow: hidden; border: 1.8cqi solid var(--paper); border-radius: 2.2cqi; background: var(--shell); box-shadow: var(--shadow-polaroid); rotate: 1.2deg; }
+.post--photo > img { position: absolute; inset: 0; }
+.post--photo::before { content: ""; position: absolute; inset: 0 0 auto; height: 40%; z-index: 1; background: linear-gradient(rgba(255, 253, 242, .82), rgba(255, 253, 242, 0)); }
+.post__mast { position: absolute; top: 6cqi; right: 6cqi; z-index: 2; text-align: right; }
+.post__mast .t-label { font-size: 2.4cqi; color: var(--stormy); }
+.post__script { font-family: var(--font-serif); font-style: italic; font-size: 11cqi; line-height: .9; color: var(--ocean); margin-top: 3cqi; }
+.post__caps { font-family: var(--font-serif); text-transform: uppercase; font-size: 10.5cqi; line-height: .88; letter-spacing: .01em; color: var(--deep); }
+.post__note { position: absolute; right: 5cqi; bottom: 6cqi; z-index: 2; width: 48%; padding: 6cqi 4.5cqi 4.5cqi; background: var(--paper); box-shadow: var(--shadow-paper); rotate: -5deg; }
+.post__note p { font-family: var(--font-serif); font-style: italic; font-size: 3.8cqi; line-height: 1.28; color: var(--stormy); }
+.post__note::after { content: ""; position: absolute; inset: 1.6cqi; border: .3cqi dashed var(--line-strong); pointer-events: none; }
+.post__sun { position: absolute; top: -4cqi; left: 50%; translate: -50% 0; width: 9cqi; height: 9cqi; color: var(--marigold); filter: drop-shadow(0 2px 2px rgba(4, 40, 41, .3)); }
+
+/* 3 · the letter (a postcard from summer) */
+.post--letter { width: min(100cqw, 100cqh * .88); aspect-ratio: 1 / 1.1; filter: drop-shadow(0 18px 22px rgba(4, 40, 41, .38)); }
+.post--letter .post__perf { position: absolute; inset: 5% 0 7% 22%; }
+.post--letter .post__sheet { height: 100%; display: grid; align-content: start; gap: 2.4cqi; padding: 4cqi 4.5cqi 4cqi 15cqi; overflow: hidden; }
+.post__marks { position: relative; height: 21cqi; margin-bottom: 1cqi; }
+.post__pm { position: absolute; display: grid; place-content: center; text-align: center; padding: 1.4cqi 2cqi; border: .4cqi solid currentColor; font-family: var(--font-serif); text-transform: uppercase; font-size: 2.5cqi; line-height: 1.1; letter-spacing: .06em; opacity: .85; }
+.post__pm small { font-size: 2.1cqi; margin-top: .5cqi; }
+.post__pm--0 { left: 0; top: 0; width: 17cqi; height: 17cqi; border-radius: 50%; color: var(--ocean); rotate: -8deg; }
+.post__pm--1 { left: 19cqi; top: 7cqi; max-width: 22cqi; border-radius: 1cqi; color: var(--deep); outline: .3cqi solid currentColor; outline-offset: .8cqi; rotate: 4deg; }
+.post__pm--2 { right: 0; top: 0; width: 16cqi; height: 16cqi; border-radius: 50%; color: var(--brick); rotate: 12deg; }
+.post__from { font-family: var(--font-serif); font-style: italic; font-size: 8cqi; line-height: .95; color: var(--deep); border-block: .3cqi dashed var(--line-strong); padding-block: 1.6cqi; }
+.post__from span { display: block; margin-bottom: .8cqi; font-family: var(--font-body); font-style: normal; font-weight: 600; font-size: 2.3cqi; letter-spacing: .22em; text-transform: uppercase; color: var(--brick); }
+.post__ss { font-size: 2.2cqi; color: var(--ink-mute); }
+.post__msg { font-family: var(--font-serif); font-size: 3.6cqi; line-height: 1.32; color: var(--stormy); }
+.post__box { justify-self: start; padding: 1.8cqi 2.4cqi; border: .3cqi solid var(--line-strong); font-family: var(--font-serif); text-transform: uppercase; letter-spacing: .05em; font-size: 2.5cqi; line-height: 1.45; color: var(--deep); rotate: -1.5deg; }
+.post__box .t-label { display: block; font-size: 1.9cqi; color: var(--ink-mute); }
+.post__strip { position: absolute; left: 1%; top: 0; bottom: 0; width: 31%; display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 2.2cqi; padding: 2.2cqi; background: var(--paper); box-shadow: var(--shadow-polaroid); rotate: -2.5deg; }
+.post__strip div { overflow: hidden; background: var(--shell); }
+
+/* 4 · the welcome card (caprini) */
+.post--brand { width: min(100cqw, 100cqh * .76); display: grid; }
+.post__stripes { position: relative; z-index: 1; width: 90%; aspect-ratio: 16 / 9; display: grid; place-content: center; text-align: center; background: repeating-linear-gradient(90deg, var(--jasmine) 0 5cqi, var(--paper) 5cqi 10cqi); box-shadow: var(--shadow-polaroid); rotate: -2.5deg; }
+.post__stripes .wordmark { font-size: 15cqi; }
+.post__tag { font-family: var(--font-serif); font-style: italic; font-size: 4.8cqi; color: var(--deep); margin-top: 4cqi; }
+.post__paperclip { position: absolute; left: 5cqi; top: -6cqi; width: 5.5cqi; fill: none; stroke: var(--stormy); stroke-width: 2.6; stroke-linecap: round; }
+.post__back { position: relative; justify-self: end; width: 94%; margin-top: -7cqi; display: grid; gap: 2.6cqi; padding: 10cqi 5.5cqi 4cqi; background: var(--paper); border: 1.4cqi solid transparent; border-image: repeating-linear-gradient(-45deg, var(--jasmine) 0 2.5cqi, var(--paper) 2.5cqi 5cqi) 14; box-shadow: var(--shadow-polaroid); rotate: 1.4deg; }
+.post__welcome { display: flex; justify-content: space-between; align-items: start; gap: 4cqi; }
+.post__welcome .post__caps { font-family: var(--font-display); font-weight: 600; font-size: 5.4cqi; line-height: 1.05; letter-spacing: 0; }
+.post__stamp { width: 17cqi; flex-shrink: 0; margin-top: -4cqi; rotate: 5deg; color: var(--ocean); }
+.post__stamp .stamp { --notch: 1.1cqi; }
+.post__stamp .stamp__inner { padding: .8cqi; }
+.post__stamp .t-label { font-size: 1.5cqi; margin-top: .6cqi; letter-spacing: .1em; }
+.post__lede { font-family: var(--font-serif); font-style: italic; font-size: 4.6cqi; line-height: 1.12; color: var(--ocean); }
+.post__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqi; }
+.post__cols ul { margin: 0; padding: 0 4cqi 0 0; list-style: none; display: grid; gap: 1.2cqi; align-content: start; font-size: 2.9cqi; line-height: 1.32; border-right: .3cqi solid var(--line-strong); }
+.post__cols li::before { content: "✶ "; color: var(--coral); }
+.post__lines p { font-family: var(--font-script); font-size: 5.2cqi; line-height: 1; color: var(--ocean); padding: 1.4cqi 0 .4cqi; border-bottom: .25cqi solid var(--line-strong); }
+.post__foot { display: flex; justify-content: space-between; gap: 2cqi; font-size: 2.1cqi; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mute); }
+
+@media (max-width: 900px) {
+  .stack { position: relative; top: auto; height: auto; min-height: 0; aspect-ratio: 4 / 5.5; max-height: 86svh; }
+  .stack__hint { display: none; }
+}
+@media (max-width: 480px) { .posts__slide { padding: 4.2rem .75rem 4.6rem; } }
+
+/* ---- 9 · Shop: the sea chart (pin: freepik treasure map, ship reference) -- */
+.shop-hero { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-s) var(--space-l); align-items: end; padding-block: var(--space-m) var(--space-l); }
+.shop-hero__title { position: relative; }
+.shop-hero__title .t-hand { position: absolute; left: .1em; top: 0; z-index: 1; color: var(--brick); transform: rotate(-7deg); font-size: clamp(2rem, 1.5rem + 2vw, 3.4rem); }
+.shop-hero h1 { font-size: clamp(3.4rem, 1.2rem + 8vw, 9rem); color: var(--ocean); padding-top: .42em; white-space: nowrap; }
+.shop-hero__intro { justify-self: end; display: grid; gap: .6rem; max-width: 30rem; padding-bottom: .6em; }
+.shop-hero__intro p:not(.t-tag) { color: var(--ink-soft); }
+@media (max-width: 1000px) { .shop-hero { grid-template-columns: 1fr; } .shop-hero__intro { justify-self: start; } }
+
+/* no frame, no paper: islands, contour lines and the sea lane sit right on the page */
+.chart { --land: color-mix(in srgb, var(--papaya) 72%, var(--jasmine)); position: relative; max-width: 78rem; margin-inline: auto; aspect-ratio: 1200 / 640; }
+.chart__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.chart-hint { margin-top: .9rem; text-align: center; text-wrap: balance; }
+.chart-hint svg { display: inline-block; width: 1.1rem; height: .9rem; margin-right: .4rem; vertical-align: -.1rem; color: var(--brick); }
+@media (max-width: 760px) {
+  .chart-scroll { overflow-x: auto; margin-inline: calc(var(--gutter) * -1); scrollbar-width: none; }
+  .chart-scroll::-webkit-scrollbar { display: none; }
+  .chart { width: 780px; }
+}
+
+.compass { opacity: .75; }
+.compass__ring { fill: none; stroke: var(--deep); stroke-width: 1.3; }
+.compass__ring--dash { stroke-width: 1; stroke-dasharray: 3 4; }
+.compass__major { fill: none; stroke: var(--deep); stroke-width: 1.3; stroke-linejoin: round; }
+.compass__minor { fill: none; stroke: var(--coral); stroke-width: 1.3; stroke-linejoin: round; }
+.compass__n { font-family: var(--font-serif); font-style: italic; font-size: 22px; fill: var(--deep); text-anchor: middle; }
+
+.isle { cursor: pointer; }
+.isle use { stroke-linejoin: round; }
+/* contour rings: a wide stroke, then a page-coloured one just inside it, leaves a thin line */
+.isle__ring { fill: var(--bg); stroke: color-mix(in srgb, var(--bg) 62%, var(--cyan)); }
+.isle__ring--1 { stroke: color-mix(in srgb, var(--bg) 42%, var(--cyan)); }
+.isle__ring--2 { stroke: color-mix(in srgb, var(--bg) 22%, var(--cyan)); }
+.isle__gap { fill: var(--bg); stroke: var(--bg); }
+.isle__land { fill: var(--land); stroke: var(--deep); stroke-width: 2.4; transition: fill var(--dur-base); }
+.isle:hover .isle__land { fill: color-mix(in srgb, var(--land) 70%, var(--jasmine)); }
+.isle.is-here .isle__land { fill: color-mix(in srgb, var(--land) 45%, var(--jasmine)); }
+.m-wave { fill: none; stroke: var(--cyan); stroke-width: 2.2; stroke-linecap: round; opacity: .55; }
+.m-trunk, .m-line { fill: none; stroke: var(--deep); stroke-linecap: round; }
+.m-trunk { stroke-width: 3.2; }
+.m-line { stroke-width: 1.4; }
+.m-frond { fill: var(--turf); stroke: var(--deep); stroke-width: 1.2; stroke-linejoin: round; }
+.m-nut { fill: var(--brick); }
+.m-tower { fill: var(--sand); stroke: var(--deep); stroke-width: 1.6; }
+.m-band { fill: var(--solae-red); stroke: var(--deep); stroke-width: 1.2; }
+.m-lamp { fill: var(--jasmine); stroke: var(--deep); stroke-width: 1.4; }
+.m-canopy { fill: var(--ocean); stroke: var(--deep); stroke-width: 1.4; stroke-linejoin: round; }
+.m-canopy-stripe { fill: var(--sand); }
+.m-hut { fill: var(--sand); stroke: var(--deep); stroke-width: 1.6; }
+.m-door { fill: var(--coral); }
+.m-roof { fill: var(--marigold); stroke: var(--deep); stroke-width: 1.6; stroke-linejoin: round; }
+.m-pier { fill: color-mix(in srgb, var(--marigold) 40%, var(--papaya)); stroke: var(--deep); stroke-width: 1.4; }
+.m-trail { fill: none; stroke: var(--brick); stroke-width: 2.4; stroke-dasharray: 2 6; stroke-linecap: round; }
+.m-x { stroke: var(--brick); stroke-width: 4.2; stroke-linecap: round; }
+
+.chart__lane { fill: none; stroke: var(--deep); stroke-width: 2.2; stroke-dasharray: 1 9; stroke-linecap: round; opacity: .55; }
+.chart__trail { fill: none; stroke: var(--coral); stroke-width: 4.5; stroke-dasharray: 11 8; stroke-linecap: round; }
+.dock { fill: var(--sand); stroke: var(--deep); stroke-width: 2; }
+.dock.is-here { fill: var(--coral); }
+
+.ship { pointer-events: none; }
+.ship__mast { fill: none; stroke: var(--deep); stroke-width: 3; stroke-linecap: round; }
+.ship__sail { fill: var(--sand); stroke: var(--deep); stroke-width: 1.8; stroke-linejoin: round; }
+.ship__sail--jib { fill: var(--papaya); }
+.ship__band { fill: var(--coral); }
+.ship__sun { fill: var(--jasmine); stroke: var(--deep); stroke-width: 1.4; }
+.ship__flag { fill: var(--solae-red); stroke: var(--deep); stroke-width: 1; stroke-linejoin: round; }
+.ship__flag--2 { fill: var(--jasmine); }
+.ship__hull { fill: var(--deep); }
+.ship__rail { stroke: var(--coral); stroke-width: 3.5; }
+.ship__port { fill: var(--sand); }
+.ship__water, .ship__wake { fill: none; stroke: var(--ocean); stroke-width: 2.4; stroke-linecap: round; }
+.ship__wake { opacity: 0; transition: opacity var(--dur-base); }
+.chart.is-sailing .ship__wake { opacity: .85; }
+.ship__bob { transform-box: fill-box; transform-origin: 50% 100%; animation: bob 2.6s var(--ease-swell) infinite; }
+.chart.is-sailing .ship__bob { animation-duration: .5s; }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-1.6deg); } 50% { transform: translateY(-3px) rotate(1.6deg); } }
+@media (prefers-reduced-motion: reduce) { .ship__bob { animation: none; } }
+
+/* port signs on the chart, and the same ports as sticky tabs below it */
+.port, .ports__tab { display: inline-flex; align-items: center; gap: .5rem; border-radius: var(--r-pill); text-align: left; line-height: 1.12; white-space: nowrap; }
+.port { position: absolute; translate: -50% -50%; z-index: 1; padding: .28rem .9rem .28rem .3rem; border: 1.5px solid var(--deep); background: var(--sand); color: var(--deep); box-shadow: 0 3px 0 var(--deep); transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast), background var(--dur-fast), color var(--dur-fast); }
+.port:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--deep); }
+.port[aria-pressed="true"] { background: var(--deep); color: var(--sand); box-shadow: 0 3px 0 var(--coral); }
+.port__n { display: grid; place-items: center; flex-shrink: 0; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--coral); color: var(--deep); font-weight: 700; font-size: .78rem; }
+.port__n svg { width: 1.05rem; height: .85rem; }
+[aria-pressed="true"] > .port__n { background: var(--jasmine); }
+.port__txt { display: grid; }
+.port__txt b { font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: clamp(1.05rem, .9rem + .4vw, 1.3rem); }
+.port__txt small { font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.ports { position: sticky; top: var(--header-h); z-index: 30; margin-top: var(--space-m); background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-block: 1px solid var(--line); }
+.ports__inner { display: flex; gap: .45rem; overflow-x: auto; padding-block: .6rem; scrollbar-width: none; }
+.ports__inner::-webkit-scrollbar { display: none; }
+.ports__tab { flex-shrink: 0; padding: .3rem 1rem .3rem .3rem; border: 1.5px solid var(--line-strong); background: transparent; color: var(--ink); transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast); }
+.ports__tab:hover { border-color: var(--deep); }
+.ports__tab[aria-pressed="true"] { background: var(--deep); border-color: var(--deep); color: var(--sand); }
+@media (min-width: 1100px) { .ports__inner { justify-content: center; } }
+
+/* the port you sailed to: a clear name, what lives there, then the products */
+.port-panel { padding-block: var(--space-xl) var(--space-2xl); scroll-margin-top: calc(var(--header-h) + 4.4rem); }
+.port-head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) auto; gap: var(--space-s) var(--space-l); align-items: end; padding-bottom: var(--space-l); margin-bottom: var(--space-xl); border-bottom: 1.5px dashed var(--line-strong); animation: port-in var(--dur-slow) var(--ease-out); }
+.port-head__title .t-label { color: var(--brick); }
+.port-head h2 { font-size: clamp(2.8rem, 1.5rem + 5.2vw, 6.6rem); color: var(--ocean); margin-top: .35rem; }
+.port-head__about { display: grid; gap: var(--space-s); }
+.port-head__about .t-lead { color: var(--ink-soft); }
+.port-head__notes { display: flex; flex-wrap: wrap; gap: .4rem; }
+.port-head__notes li { padding: .3rem .85rem; border-radius: var(--r-pill); background: var(--surface-sunk); font-size: var(--fs-small); font-weight: 600; color: var(--deep); }
+.port-head__notes li::before { content: "✶ "; color: var(--coral); }
+.port-head__mark { width: clamp(6rem, 5rem + 3vw, 8rem); color: rgba(180, 4, 33, .6); transform: rotate(-10deg); align-self: start; }
+.port-head__mark circle { fill: none; stroke: currentColor; stroke-width: 2.5; }
+.port-head__mark circle + circle { stroke-width: 1.5; }
+.port-head__arc { font-family: var(--font-body); font-weight: 700; font-size: 10px; letter-spacing: 2.4px; fill: currentColor; }
+.port-head__no { font-family: var(--font-serif); font-style: italic; font-size: 20px; fill: currentColor; }
+@media (max-width: 900px) {
+  .port-head { grid-template-columns: minmax(0, 1fr) auto; }
+  .port-head__about { grid-column: 1 / -1; }
+  .port-head__mark { grid-area: 1 / 2; width: clamp(4.5rem, 3.5rem + 4vw, 6rem); }
+}
+.port-group + .port-group { margin-top: var(--space-xl); }
+.port-group__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; padding-bottom: .7rem; margin-bottom: var(--space-m); border-bottom: 1px solid var(--line); }
+.port-group__head h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .7rem; font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: var(--fs-h2); line-height: 1.1; color: var(--deep); }
+.port-group__head h3 span { font-family: var(--font-display); font-style: normal; font-size: .5em; letter-spacing: .1em; color: var(--brick); }
+.port-group__head small { font-family: var(--font-body); font-style: normal; font-weight: 600; font-size: var(--fs-label); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute); }
+.port-group__head .link-u { border: 0; background: none; padding: 0; color: var(--ocean); }
+.port-next { display: grid; justify-items: center; gap: .2rem; margin-top: var(--space-xl); text-align: center; }
+.port-next .t-hand { color: var(--brick); transform: rotate(-4deg); }
+.port-next__boat { width: 1.35rem; height: 1.1rem; }
+@keyframes port-in { from { opacity: 0; transform: translateY(14px); } }
 
 /* ---- Reveal ---------------------------------------------------------- */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }

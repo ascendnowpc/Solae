@@ -1,6 +1,6 @@
 /* ==========================================================================
    SOLAE — mock storefront behaviour
-   Product data, catalog filter, cart drawer, rails, product page.
+   Product data, catalog filter, cart drawer, rails, shop map, postcard product page.
    Photography: Pexels (free licence) — stand-ins until the real shoot.
    ========================================================================== */
 
@@ -37,6 +37,17 @@ const SPRITE = `
       </g>
     </g>
   </symbol>
+  <symbol id="i-boat" viewBox="0 0 40 32">
+    <path fill="currentColor" d="M19 2V22H4ZM22 6Q32 12 31 22H22Z"/>
+    <path fill="currentColor" d="M2 24H38L33 30H7Z"/>
+  </symbol>
+  <!-- gooey wide type: warps the outline, then melts the corners (.t-fluid) -->
+  <filter id="f-fluid" x="-4%" y="-15%" width="108%" height="130%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency=".004 .009" numOctaves="1" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feGaussianBlur in="d" stdDeviation="1.6" result="b"/>
+    <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 14 -6"/>
+  </filter>
 </svg>`;
 
 /* ---- Data --------------------------------------------------------------- */
@@ -53,42 +64,47 @@ const C = {
   willow:  { name: "willow",        dot: "#93C186" },
   marigold:{ name: "marigold",      dot: "#FFAB4C" },
   lilac:   { name: "lilac",         dot: "#B9A6C9" },
-  cabana:  { name: "cabana stripe", dot: "linear-gradient(90deg,#B40421 0 33%,#FFFDF2 0 66%,#B40421 0)" },
   white:   { name: "white",         dot: "#FFFFFF" },
   black:   { name: "black",         dot: "#1E2626" },
   sand:    { name: "sand",          dot: "#FFECD1" },
 };
 
+/* Brand notes: plain suits, except the two signatures (off-shoulder, flounce).
+   Every suit is double-lined with small removable pads held in by a second layer of fabric. */
 const PRODUCTS = [
-  { id: "tidepool", name: "the tidepool one-piece", cat: "swimsuits", type: "swimsuit", price: 2799,
+  { id: "tidepool", name: "the tidepool one-piece", short: "tidepool", cat: "swimsuits", type: "scoop-neck one-piece", price: 2799,
     img: "31094963", pos: "80% 30%", alt: "a lagoon-blue one-piece swimsuit, worn", gallery: ["31094963", "29957708"],
     badges: [["new", "sun"]], colors: ["lagoon", "lilac", "brick", "deep"],
     blurb: "our everyday one-piece. plain, double-lined and scooped just right — with removable pads held in by a second layer of fabric, so nothing shifts when you dive in." },
-  { id: "cabana", name: "the cabana suit", cat: "swimsuits", type: "swimsuit", price: 2599,
-    img: "5405652", pos: "40% 50%", alt: "a red and white striped swimsuit laid flat with a straw bag", gallery: ["5405652", "5405653"],
-    badges: [["bestseller", "ink"]], colors: ["cabana", "sky", "turf", "coral"],
-    blurb: "our stripe, borrowed from a beach umbrella. light padding, adjustable straps, and a scoop back that hides tan lines." },
-  { id: "off-shoulder", name: "the off-shoulder", cat: "swimsuits", type: "signature swimsuit", price: 3199,
+  { id: "cabana", name: "the cabana square-neck", short: "cabana", cat: "swimsuits", type: "square-neck one-piece", price: 2599,
+    img: "10486115", pos: "50% 30%", alt: "three friends in one-piece swimsuits laughing together on the beach", gallery: ["10486115", "8926078"],
+    badges: [["bestseller", "ink"]], colors: ["sky", "coral", "turf", "jasmine"],
+    blurb: "a plain square neckline and a low scoop back. small padding, adjustable straps, and nothing that digs in." },
+  { id: "shallows", name: "the shallows racerback", short: "shallows", cat: "swimsuits", type: "racerback one-piece", price: 2699,
+    img: "33265997", pos: "50% 40%", alt: "a group of girls in swimsuits posing on rocks by the sea", gallery: ["33265997", "40471890"],
+    badges: [], colors: ["ocean", "marigold", "black"],
+    blurb: "a plain high neck and a racerback that stays put for laps, cannonballs and climbing out the ladder." },
+  { id: "off-shoulder", name: "the off-shoulder", short: "off-shoulder", cat: "swimsuits", sig: true, type: "signature swimsuit", price: 3199,
     img: "28681540", pos: "50% 30%", alt: "a black off-the-shoulder one-piece, worn standing in the sea", gallery: ["28681540", "28681548"],
     badges: [["signature 01", "coral"]], colors: ["black", "coral", "ocean"],
     blurb: "one of our two signature styles. a soft off-the-shoulder neckline with a hidden silicone grip, so it stays exactly where you put it." },
-  { id: "flounce", name: "the flounce", cat: "swimsuits", type: "signature swimsuit", price: 3199,
+  { id: "flounce", name: "the flounce", short: "flounce", cat: "swimsuits", sig: true, type: "signature swimsuit", price: 3199,
     img: "4271771", pos: "50% 40%", alt: "a blue-grey one-piece with ruffled flounce straps, laid flat", gallery: ["4271771", "27330805"],
-    badges: [["signature 02", "coral"]], colors: ["sky", "hibiscus", "willow"],
-    blurb: "our second signature: soft flounces on the straps, finished with a basting stitch down the middle. you told us you wanted it, so it stayed." },
-  { id: "boardwalk", name: "the boardwalk short", cat: "shorts", type: "knee-length short", price: 1499,
+    badges: [["signature 02", "coral"]], colors: ["sky", "hibiscus", "willow"], stitch: ["basting stitch", "no stitch"],
+    blurb: "our second signature: soft flounces on the straps, with a basting stitch down the middle. still deciding if it stays — pick the one you'd wear." },
+  { id: "boardwalk", name: "the boardwalk short", short: "boardwalk", cat: "shorts", type: "knee-length short", price: 1499,
     img: "3998649", pos: "50% 60%", alt: "swim shorts and suits laid out flat on a wooden floor", gallery: ["3998649", "25649794"],
-    badges: [["matches every suit", "sun"]], colors: ["lagoon", "coral", "white", "black"],
+    badges: [["matches every suit", "sun"]], colors: [],
     blurb: "knee-length (or just above), quick-dry and made to match your suit — or keep it classic in white or black." },
-  { id: "drift", name: "the drift cover-up", cat: "cover-ups", type: "cover-up", price: 1999,
+  { id: "drift", name: "the drift cover-up", short: "drift", cat: "cover-ups", type: "cover-up", price: 1999,
     img: "35126783", pos: "50% 35%", alt: "a sheer yellow cover-up worn on a tropical beach", gallery: ["35126783", "36173873"],
-    badges: [["new", "sun"]], colors: ["jasmine", "lagoon", "coral"],
-    blurb: "a breezy kaftan that comes in a print to match each suit. throw it on for the walk from the water to lunch." },
-  { id: "white-one", name: "the white one", cat: "cover-ups", type: "cover-up", price: 2199,
+    badges: [["new", "sun"]], colors: [],
+    blurb: "a breezy kaftan that comes in a colour to match each suit. throw it on for the walk from the water to lunch." },
+  { id: "white-one", name: "the white one", short: "white one", cat: "cover-ups", type: "cover-up", price: 2199,
     img: "15560782", pos: "50% 30%", alt: "a long white lace cover-up worn on a misty beach", gallery: ["15560782", "8371478"],
     badges: [["goes with everything", "ink"]], colors: ["white"],
     blurb: "the one white cover-up in the collection — lace-light and long, made to go over every single suit we make." },
-  { id: "shoreline", name: "the shoreline skirt", cat: "skirts", type: "cover-up skirt", price: 1299,
+  { id: "shoreline", name: "the shoreline skirt", short: "shoreline", cat: "skirts", type: "cover-up skirt", price: 1299,
     img: "7292976", pos: "50% 40%", alt: "a long plain green cover-up skirt worn at the shoreline", gallery: ["7292976", "7292977"],
     badges: [], colors: ["turf", "sand", "white", "deep"],
     blurb: "a plain wrap skirt to throw over your suit on the walk to the beach. ties at the side, folds into your tote." },
@@ -100,24 +116,59 @@ const inr = n => "₹" + n.toLocaleString("en-IN");
 const byId = id => PRODUCTS.find(p => p.id === id);
 const dot = k => C[k].dot;
 
+/* matching pieces come in every suit colour; the shorts also come in white or black */
+const SUIT_COLORS = [...new Set(PRODUCTS.filter(p => p.cat === "swimsuits").flatMap(p => p.colors))];
+byId("boardwalk").colors = [...SUIT_COLORS.filter(k => k !== "black"), "white", "black"];
+byId("drift").colors = SUIT_COLORS;
+
+/* Shop map: each category is a place. `notes` define the category in a few words. */
+const PORTS = [
+  { id: "all", place: "solae harbour", label: "everything", line: ["made for", "the sun"],
+    def: "every piece in drop 01, sorted by where it lives: plain suits, the two signatures, the shorts and cover-ups that match them, and the skirt.",
+    notes: ["swimsuits", "matching shorts", "cover-ups", "the skirt"] },
+  { id: "swimsuits", place: "swimsuit bay", label: "plain swimsuits", line: ["built for", "warm days"],
+    def: "plain, double-lined one-pieces in solid colours. every suit has small removable pads, held in place by a second layer of fabric.",
+    notes: ["double-lined", "small removable pads", "held in by a second layer"] },
+  { id: "signatures", place: "signature isle", label: "signature swimsuits", line: ["built for", "warm days"],
+    def: "the only two suits that aren't plain: one off the shoulder, one with flounces. same lining, same pads that stay put.",
+    notes: ["off the shoulder", "flounces + basting stitch", "small removable pads"] },
+  { id: "shorts", place: "shorts shore", label: "matching shorts", line: ["made to", "match"],
+    def: "knee-length, or just above. get them in your suit's colour, or keep it simple in white or black.",
+    notes: ["knee-length or just above", "match your suit", "or white / black"] },
+  { id: "cover-ups", place: "cover-up cove", label: "cover-ups", line: ["for the", "walk home"],
+    def: "a kaftan in every suit colour, plus the white one, which goes with everything.",
+    notes: ["matches every suit", "plus the white one", "quick-dry"] },
+  { id: "skirts", place: "skirt sandbar", label: "the skirt", line: ["for the walk", "to the beach"],
+    def: "one plain cover-up skirt to wear over your suit on the walk to the beach.",
+    notes: ["plain, no print", "ties at the side", "folds into your tote"] },
+];
+const portOf = p => p.sig ? "signatures" : p.cat;
+const portById = id => PORTS.find(x => x.id === id);
+const inPort = id => id === "all" ? PRODUCTS : PRODUCTS.filter(p => portOf(p) === id);
+const pad = n => String(n).padStart(2, "0");
+
 const photo = (p, { w = 900, cls = "frame", id = p.img, alt = p.alt } = {}) =>
   `<div class="${cls}"><img src="${PX(id, w)}" alt="${alt}" loading="lazy" style="object-position:${p.pos}"></div>`;
 
 const ICON = {
   plus: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  prev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  next: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
 };
 
-function card(p) {
+const MAX_SW = 6;
+function card(p, i = 0) {
   const badges = p.badges.map(([t, tone]) => `<span class="badge badge--${tone}">${t}</span>`).join("");
-  const sw = p.colors.map(k => `<span class="swatch" style="--c:${dot(k)}" title="${C[k].name}"></span>`).join("");
-  return `<article class="card reveal" data-cat="${p.cat}">
+  const sw = p.colors.slice(0, MAX_SW).map(k => `<span class="swatch" style="--c:${dot(k)}" title="${C[k].name}"></span>`).join("")
+    + (p.colors.length > MAX_SW ? `<span class="swatch-more">+${p.colors.length - MAX_SW}</span>` : "");
+  return `<article class="card reveal" data-cat="${p.cat}" style="--i:${i}">
     <div class="card__media">
       ${photo(p, { cls: "frame-wavy", w: 700 })}
       <div class="card__badges">${badges}</div>
     </div>
     <h3 class="card__name"><a href="product.html?p=${p.id}">${p.name}</a></h3>
     <p class="card__price">${inr(p.price)}</p>
-    <div class="swatches" aria-label="colours: ${p.colors.map(k => C[k].name).join(", ")}">${sw}</div>
+    <div class="swatches" aria-label="${p.colors.length} colours: ${p.colors.map(k => C[k].name).join(", ")}">${sw}</div>
     <button class="btn btn--ghost btn--sm card__add" type="button" data-add="${p.id}" aria-label="add ${p.name} to bag">${ICON.plus}add to bag</button>
   </article>`;
 }
@@ -125,12 +176,13 @@ function card(p) {
 /* ---- Cart --------------------------------------------------------------- */
 const CART_KEY = "solae-cart-v2";
 let cart = [];
-try { cart = (JSON.parse(localStorage.getItem(CART_KEY)) || []).filter(l => byId(l.id)); } catch { cart = []; }
+try { cart = (JSON.parse(localStorage.getItem(CART_KEY)) || []).filter(l => byId(l.id) && C[l.color]); } catch { cart = []; }
 const save = () => { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch {} };
 
 function addToCart(id, color, size = "m", extra = "") {
   const p = byId(id); if (!p) return;
   color = color || p.colors[0];
+  extra = extra || (p.stitch ? p.stitch[0] : "");
   const key = [id, color, size, extra].join("|");
   const line = cart.find(l => l.key === key);
   line ? line.qty++ : cart.push({ key, id, color, size, extra, qty: 1 });
@@ -151,7 +203,7 @@ function renderCart() {
   document.querySelector("[data-cart-total]").textContent = inr(total);
   document.querySelector("[data-cart-foot]").hidden = count === 0;
   items.innerHTML = count === 0
-    ? `<div class="drawer__empty"><p class="t-hand">nothing yet</p><p>the sun is out though.</p><a class="btn btn--ink btn--sm" href="index.html#catalog">shop drop 01</a></div>`
+    ? `<div class="drawer__empty"><p class="t-hand">nothing yet</p><p>the sun is out though.</p><a class="btn btn--ink btn--sm" href="shop.html">shop drop 01</a></div>`
     : cart.map(l => {
         const p = byId(l.id);
         return `<div class="line">
@@ -183,10 +235,13 @@ function openPanel(sel, open) {
 
 /* ---- Page wiring -------------------------------------------------------- */
 document.body.insertAdjacentHTML("afterbegin", SPRITE);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); } }), { rootMargin: "0px 0px -6% 0px" });
+const reveal = root => root.querySelectorAll(".reveal").forEach(el => io.observe(el));
 
 document.querySelectorAll("[data-products]").forEach(el => {
   const ids = el.dataset.products ? el.dataset.products.split(",") : PRODUCTS.map(p => p.id);
-  el.innerHTML = ids.map(id => card(byId(id))).join("");
+  el.innerHTML = ids.map((id, i) => card(byId(id), i)).join("");
 });
 
 /* Catalog map filter */
@@ -227,19 +282,237 @@ document.querySelectorAll("[role=tablist]").forEach(list => {
 
 const header = document.querySelector(".header");
 addEventListener("scroll", () => header?.classList.toggle("is-scrolled", scrollY > 8), { passive: true });
-const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); } }), { rootMargin: "0px 0px -6% 0px" });
-document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+reveal(document);
 
 document.querySelectorAll("[data-news]").forEach(f => f.addEventListener("submit", e => { e.preventDefault(); f.reset(); toast("you're on the list — see you on the shore"); }));
 
 renderCart();
 
-/* ---- Product page --------------------------------------------------------- */
+/* ---- Shop map ------------------------------------------------------------- */
+/* Islands and lines on the page, no frame: contour rings around each island,
+   one dotted sea lane between the docks. Every port is a category; the boat
+   follows the lane, taking the shorter way round.
+   Chart space is 1200 × 640; `at`/`r` shape each island, `label` places its sign. */
+const CHART = {
+  isles: {
+    all:          { at: [170, 482],  r: [118, 66],  seed: 9,  label: [170, 380], dock: [326, 472],
+                    deco: [["light", 132, 484], ["palm", 206, 492, .9]] },
+    swimsuits:    { at: [440, 262],  r: [128, 78],  seed: 4,  label: [440, 150], dock: [236, 276],
+                    deco: [["palm", 390, 270], ["umbrella", 452, 292], ["palm", 506, 280, .85]] },
+    signatures:   { at: [780, 156],  r: [98, 52],   seed: 12, label: [780, 58],  dock: [626, 200],
+                    deco: [["palm", 742, 168], ["x", 826, 162]] },
+    shorts:       { at: [1050, 292], r: [76, 104],  seed: 21, label: [1050, 140], dock: [906, 300],
+                    deco: [["pier", 1000, 300], ["palm", 1062, 292, .9]] },
+    "cover-ups":  { at: [690, 438],  r: [100, 54],  seed: 15, label: [690, 336], dock: [690, 566],
+                    deco: [["hut", 668, 448], ["palm", 722, 444, .85]] },
+    skirts:       { at: [1012, 548], r: [70, 27],   seed: 2,  label: [1012, 470], dock: [872, 548],
+                    deco: [["palm", 1014, 546, .8]] },
+  },
+  lane: [[326, 472], [262, 382], [236, 276], [300, 120], [480, 96], [626, 200], [800, 244], [906, 300], [906, 440], [872, 548], [800, 594], [690, 566], [520, 548]],
+  waves: [[580, 70], [560, 360], [880, 380], [1120, 470], [330, 590], [960, 70], [140, 290]],
+};
+
+const f1 = n => Math.round(n * 10) / 10;
+/* closed Catmull-Rom curve through points, as cubic Béziers */
+function smooth(pts) {
+  const n = pts.length, P = i => pts[(i + n) % n];
+  let d = `M${P(0).map(f1).join(" ")}`;
+  for (let i = 0; i < n; i++) {
+    const [a, b, c, e] = [P(i - 1), P(i), P(i + 1), P(i + 2)];
+    d += `C${f1(b[0] + (c[0] - a[0]) / 6)} ${f1(b[1] + (c[1] - a[1]) / 6)} ${f1(c[0] - (e[0] - b[0]) / 6)} ${f1(c[1] - (e[1] - b[1]) / 6)} ${f1(c[0])} ${f1(c[1])}`;
+  }
+  return d + "Z";
+}
+/* a wobbly island outline, the same every time for a given seed */
+function blob([cx, cy], [rx, ry], seed) {
+  let s = seed;
+  const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280 * Math.PI * 2;
+  const [a, b, c] = [rnd(), rnd(), rnd()];
+  return smooth(Array.from({ length: 22 }, (_, i) => {
+    const t = i / 22 * Math.PI * 2;
+    const k = 1 + .14 * Math.sin(2 * t + a) + .1 * Math.sin(3 * t + b) + .06 * Math.sin(5 * t + c) + .035 * Math.sin(8 * t + a + b);
+    return [cx + Math.cos(t) * rx * k, cy + Math.sin(t) * ry * k];
+  }));
+}
+
+const DECO = {
+  palm: `<path class="m-trunk" d="M0 0C-2-12 1-24 6-34"/>
+    <path class="m-frond" d="M6-34C-2-43-15-41-21-32C-11-37-3-36 6-34ZM6-34C14-45 27-43 31-33C21-38 13-37 6-34ZM6-34C2-47 9-55 17-55C11-49 8-42 6-34ZM6-34C-5-36-13-28-13-19C-7-28 0-32 6-34ZM6-34C17-36 25-28 25-19C19-28 12-32 6-34Z"/>
+    <circle class="m-nut" cx="4" cy="-31" r="2.2"/><circle class="m-nut" cx="9" cy="-32" r="2.2"/>`,
+  light: `<path class="m-tower" d="M-9 0L-6-42H6L9 0Z"/><path class="m-band" d="M-8.3-10H8.3L7.7-19H-7.7ZM-7.1-28H7.1L6.6-35H-6.6Z"/>
+    <rect class="m-lamp" x="-6" y="-50" width="12" height="8"/><path class="m-band" d="M-8-50L0-59L8-50Z"/>`,
+  umbrella: `<path class="m-line" d="M0 0V-26"/><path class="m-canopy" d="M-20-24Q0-44 20-24Z"/><path class="m-canopy-stripe" d="M-7-24Q-4-38 0-39Q-1-31 -2-24ZM7-24Q4-38 0-39Q1-31 2-24Z"/>`,
+  hut: `<path class="m-hut" d="M-15 0V-17H15V0Z"/><path class="m-door" d="M-4 0V-10H4V0Z"/><path class="m-roof" d="M-20-16L0-32L20-16Z"/><path class="m-line" d="M-12-18L0-28M-4-17L6-26M4-17L12-23"/>`,
+  pier: `<path class="m-pier" d="M0-6H-62V3H0Z"/><path class="m-line" d="M-10-6V3M-20-6V3M-30-6V3M-40-6V3M-50-6V3M-56 3V10M-34 3V10M-12 3V10"/>`,
+  x: `<path class="m-trail" d="M-62 10C-50 22-30 2-14 8"/><path class="m-x" d="M-7-7L7 7M7-7L-7 7"/>`,
+};
+const deco = ([k, x, y, s = 1]) => `<g class="m-${k}" transform="translate(${x} ${y}) scale(${s})">${DECO[k]}</g>`;
+
+/* the boat — bow to the right, waterline at 0 */
+const SHIP = `<g class="ship__art" transform="scale(.74)">
+  <path class="ship__wake" d="M-58 6Q-66 2-74 6M-62 14Q-72 10-82 14"/>
+  <path class="ship__mast" d="M6 -6V-80M-26 -10V-62M30-14L52-28"/>
+  <path class="ship__sail ship__sail--jib" d="M8-74L50-27L20-24Z"/>
+  ${[[6, -72, -50, 13], [6, -48, -22, 17], [-26, -58, -40, 10], [-26, -38, -18, 13]].map(([x, a, b, w]) =>
+    `<path class="ship__sail" d="M${x - w} ${a}Q${x} ${a - 3} ${x + w} ${a}L${x + w + 3} ${b}Q${x} ${b + 7} ${x - w - 3} ${b}Z"/>`).join("")}
+  <path class="ship__band" d="M-11-44Q6-40 23-44L23.6-38Q6-34-11.6-38Z"/>
+  <circle class="ship__sun" cx="6" cy="-30" r="5"/>
+  <path class="ship__flag" d="M6-80L26-75L6-70Z"/><path class="ship__flag ship__flag--2" d="M-26-62L-14-59L-26-56Z"/>
+  <path class="ship__hull" d="M-50-24H-30V-18H46Q42 2 28 8H-36Q-48 2-50-18Z"/>
+  <path class="ship__rail" d="M-48-12H42"/>
+  <g class="ship__port">${[-32, -18, -4, 10, 24].map(x => `<circle cx="${x}" cy="-3" r="2.3"/>`).join("")}</g>
+  <path class="ship__water" d="M-60 10q7-6 14 0t14 0 14 0 14 0 14 0 14 0 14 0 14 0 14 0"/>
+</g>`;
+
+function chartSVG() {
+  const isles = Object.entries(CHART.isles);
+  const points = Array.from({ length: 8 }, (_, i) => `<path class="compass__${i % 2 ? "minor" : "major"}" transform="rotate(${i * 45})" d="M0-${i % 2 ? 34 : 54}L${i % 2 ? 5 : 7}-7L0 0L-${i % 2 ? 5 : 7}-7Z"/>`).join("");
+  return `<svg class="chart__svg" viewBox="0 0 1200 640" aria-hidden="true">
+    <defs>${isles.map(([id, o]) => `<path id="isle-${id}" d="${blob(o.at, o.r, o.seed)}"/>`).join("")}</defs>
+    <g class="compass" transform="translate(96 110)">
+      <circle r="62" class="compass__ring"/><circle r="30" class="compass__ring compass__ring--dash"/>
+      ${points}<text y="-70" class="compass__n">N</text>
+    </g>
+    ${CHART.waves.map(([x, y]) => `<path class="m-wave" d="M${x} ${y}q6-6 12 0t12 0 12 0"/>`).join("")}
+    ${isles.map(([id, o]) => `<g class="isle" data-port="${id}">
+      ${[66, 63, 44, 41, 22, 19].map((w, i) => `<use href="#isle-${id}" class="isle__${i % 2 ? "gap" : "ring isle__ring--" + i / 2}" style="stroke-width:${w}"/>`).join("")}
+      <use href="#isle-${id}" class="isle__land"/>
+      ${o.deco.map(deco).join("")}
+    </g>`).join("")}
+    <path class="chart__lane" d="${smooth(CHART.lane)}"/>
+    <path class="chart__trail" d="M0 0"/>
+    ${isles.map(([id, o]) => `<circle class="dock" data-dock="${id}" cx="${o.dock[0]}" cy="${o.dock[1]}" r="6"/>`).join("")}
+    <g class="ship"><g class="ship__turn"><g class="ship__bob">${SHIP}</g></g></g>
+  </svg>`;
+}
+
+const portBtn = (port, i, cls) => `<button class="${cls}" type="button" data-port="${port.id}" aria-pressed="false"${cls === "port" ? ` style="left:${f1(CHART.isles[port.id].label[0] / 12)}%;top:${f1(CHART.isles[port.id].label[1] / 6.4)}%"` : ""}>
+  <span class="port__n" aria-hidden="true">${i ? i : '<svg><use href="#i-boat"/></svg>'}</span>
+  <span class="port__txt"><b>${port.place}</b><small>${port.label} · ${inPort(port.id).length}</small></span>
+</button>`;
+
+const shop = document.querySelector("[data-shop]");
+if (shop) {
+  const chart = shop.querySelector("[data-chart]"), panel = shop.querySelector("[data-panel]"), status = shop.querySelector("[data-status]");
+  chart.insertAdjacentHTML("afterbegin", chartSVG() + PORTS.map((x, i) => portBtn(x, i, "port")).join(""));
+  const tabs = shop.querySelector("[data-ports]");
+  tabs.innerHTML = PORTS.map((x, i) => portBtn(x, i, "ports__tab")).join("");
+  const scroller = shop.querySelector(".chart-scroll");
+  const lane = chart.querySelector(".chart__lane"), trail = chart.querySelector(".chart__trail");
+  const ship = chart.querySelector(".ship"), turn = chart.querySelector(".ship__turn");
+
+  /* sample the lane once; the boat moves by index along this table */
+  const STEP = 4, total = lane.getTotalLength(), N = Math.round(total / STEP);
+  const lut = Array.from({ length: N }, (_, i) => { const q = lane.getPointAtLength(i / N * total); return [q.x, q.y]; });
+  const pt = f => { const i = ((Math.floor(f) % N) + N) % N, j = (i + 1) % N, k = f - Math.floor(f); return [lut[i][0] + (lut[j][0] - lut[i][0]) * k, lut[i][1] + (lut[j][1] - lut[i][1]) * k]; };
+  const nearest = ([x, y]) => lut.reduce((b, q, i) => (q[0] - x) ** 2 + (q[1] - y) ** 2 < (lut[b][0] - x) ** 2 + (lut[b][1] - y) ** 2 ? i : b, 0);
+  const docks = Object.fromEntries(Object.entries(CHART.isles).map(([id, o]) => [id, nearest(o.dock)]));
+
+  let at = docks.all, facing = 1, raf = 0, here = null, follow = 0;
+  const draw = (f, dir) => {
+    const [x, y] = pt(f), [x2, y2] = pt(f + dir * 3);
+    if (Math.abs(x2 - x) > .4) facing = x2 > x ? 1 : -1;
+    const tilt = Math.max(-16, Math.min(16, Math.atan2(y2 - y, Math.abs(x2 - x) || 1) * 57.3));
+    ship.setAttribute("transform", `translate(${f1(x)} ${f1(y)})`);
+    turn.setAttribute("transform", `scale(${facing} 1) rotate(${f1(tilt)})`);
+  };
+
+  function sail(id) {
+    const from = at, to = docks[id], fwd = ((to - from) % N + N) % N, dir = fwd <= N / 2 ? 1 : -1, steps = dir > 0 ? fwd : N - fwd;
+    const dur = reduceMotion.matches || !steps ? 0 : Math.min(950, 300 + steps * STEP * .55);
+    cancelAnimationFrame(raf);
+    chart.classList.toggle("is-sailing", dur > 0);
+    const t0 = performance.now();
+    const tick = now => {
+      const k = dur ? Math.min(1, Math.max(0, (now - t0) / dur)) : 1, e = k < .5 ? 4 * k ** 3 : 1 - (-2 * k + 2) ** 3 / 2;
+      at = from + dir * steps * e; draw(at, dir);
+      let d = "";
+      for (let s = 0; s <= steps * e; s += 2) d += (s ? "L" : "M") + pt(from + dir * s).map(f1).join(" ");
+      trail.setAttribute("d", d + "L" + pt(at).map(f1).join(" "));
+      if (k < 1) raf = requestAnimationFrame(tick);
+      else { at = ((to % N) + N) % N; chart.classList.remove("is-sailing"); }
+    };
+    raf = requestAnimationFrame(tick);
+    return dur;
+  }
+
+  const postmark = port => `<svg class="port-head__mark" viewBox="0 0 120 120" aria-hidden="true">
+    <circle cx="60" cy="60" r="56"/><circle cx="60" cy="60" r="40"/>
+    <path id="pm-port" d="M60 60m-48 0a48 48 0 1 1 96 0a48 48 0 1 1-96 0" fill="none" stroke="none"/>
+    <text class="port-head__arc"><textPath href="#pm-port">SOLAE · ${port.place.toUpperCase()} · DROP 01 ·</textPath></text>
+    <text x="60" y="68" text-anchor="middle" class="port-head__no">${PORTS.indexOf(port) ? "no. " + pad(PORTS.indexOf(port)) : "home"}</text>
+  </svg>`;
+
+  function renderPanel(id) {
+    const port = portById(id), n = PORTS.indexOf(port), next = PORTS[n % (PORTS.length - 1) + 1];
+    const groups = id === "all" ? PORTS.slice(1) : [port];
+    panel.innerHTML = `
+      <header class="port-head">
+        <div class="port-head__title">
+          <p class="t-label">${n ? `port ${pad(n)} of ${pad(PORTS.length - 1)}` : "home port"} · ${port.label} · ${inPort(id).length} pieces</p>
+          <h2 class="t-fluid" id="port-title">${port.place}</h2>
+        </div>
+        <div class="port-head__about">
+          <p class="t-lead">${port.def}</p>
+          <ul class="port-head__notes" role="list">${port.notes.map(x => `<li>${x}</li>`).join("")}</ul>
+        </div>
+        ${postmark(port)}
+      </header>
+      ${groups.map(g => `<div class="port-group">
+        ${id === "all" ? `<div class="port-group__head"><h3><span>${pad(PORTS.indexOf(g))}</span> ${g.place} <small>${g.label}</small></h3><button class="link-u" type="button" data-port="${g.id}">sail there</button></div>` : ""}
+        <div class="grid-products">${inPort(g.id).map(card).join("")}</div>
+      </div>`).join("")}
+      <div class="port-next">
+        <p class="t-hand" aria-hidden="true">next stop</p>
+        <button class="btn btn--ink" type="button" data-port="${next.id}"><svg class="port-next__boat" aria-hidden="true"><use href="#i-boat"/></svg>sail to ${next.place}</button>
+      </div>`;
+    reveal(panel);
+  }
+
+  function go(id, { from = "tab", quiet = false } = {}) {
+    if (!portById(id)) id = "all";
+    if (id === here) return;
+    here = id;
+    shop.querySelectorAll(".port, .ports__tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.port === id));
+    chart.querySelectorAll(".isle").forEach(g => g.classList.toggle("is-here", g.dataset.port === id));
+    chart.querySelectorAll(".dock").forEach(c => c.classList.toggle("is-here", c.dataset.dock === id));
+    const tab = shop.querySelector(`.ports__tab[data-port="${id}"]`);
+    tabs.scrollTo({ left: tab.offsetLeft - (tabs.clientWidth - tab.offsetWidth) / 2, behavior: reduceMotion.matches ? "auto" : "smooth" });
+    if (scroller.scrollWidth > scroller.clientWidth) {
+      scroller.scrollTo({ left: CHART.isles[id].dock[0] / 1200 * scroller.scrollWidth - scroller.clientWidth / 2, behavior: reduceMotion.matches ? "auto" : "smooth" });
+    }
+    const dur = sail(id);
+    renderPanel(id);
+    status.textContent = `sailed to ${portById(id).place}: ${inPort(id).length} ${portById(id).label}`;
+    history.replaceState(null, "", id === "all" ? location.pathname + location.search : "#" + id);
+    /* once the boat lands, bring the products into view if they're below the fold */
+    clearTimeout(follow);
+    if (!quiet) follow = setTimeout(() => {
+      const top = panel.getBoundingClientRect().top;
+      if (from === "map" ? top > innerHeight * .78 : top < 0 || top > innerHeight) panel.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth" });
+    }, from === "map" ? dur + 120 : 0);
+  }
+
+  shop.addEventListener("click", e => {
+    const t = e.target.closest("[data-port]");
+    if (t) go(t.dataset.port, { from: t.closest(".chart") ? "map" : "tab" });
+  });
+  addEventListener("hashchange", () => go(location.hash.slice(1)));
+
+  /* start in the harbour; a deep link (shop.html#shorts) sails straight there */
+  const start = location.hash.slice(1);
+  draw(at, 1);
+  go("all", { quiet: true });
+  if (portById(start) && start !== "all") setTimeout(() => go(start, { from: "map" }), 450);
+}
+
+/* ---- Product page: postcards ----------------------------------------------- */
 const pdp = document.querySelector("[data-pdp]");
 if (pdp) {
   const p = byId(new URLSearchParams(location.search).get("p")) || PRODUCTS[0];
+  const port = portById(portOf(p)), n = PRODUCTS.indexOf(p) + 1;
   const isSuit = p.cat === "swimsuits";
-  let color = p.colors[0], size = "m", view = 0;
+  let color = p.colors[0], size = "m", stitch = p.stitch?.[0] || "";
   const setRows = isSuit ? [byId("boardwalk"), byId("drift")] : [];
   const setState = { boardwalk: { on: false, opt: "matching" }, drift: { on: false, opt: "matching" } };
   // "match my suit" uses the suit's colour when the set piece comes in it
@@ -247,29 +520,95 @@ if (pdp) {
   const optsFor = r => r.id === "boardwalk" ? ["matching", "white", "black"] : ["matching"];
   document.title = `${p.name} — SOLAE`;
   document.querySelector("[data-crumb]") && (document.querySelector("[data-crumb]").textContent = p.name);
+  const crumbPort = document.querySelector("[data-crumb-port]");
+  if (crumbPort) { crumbPort.textContent = port.place; crumbPort.href = `shop.html#${port.id}`; }
 
+  /* the postcards — one per photo, then the letter and the welcome card */
+  const shots = p.gallery, alt = i => i ? `another look at ${p.name}` : p.alt;
+  const img = (id, i, w = 1100) => `<img src="${PX(id, w)}" alt="${alt(i)}" loading="${i ? "lazy" : "eager"}" style="object-position:${p.pos}">`;
+  const look = isSuit ? byId("boardwalk") : byId("tidepool");
+  const sun = '<svg class="post__sun" aria-hidden="true"><use href="#i-sun-solo"/></svg>';
+  const marks = [port, ...PORTS.slice(1).filter(x => x !== port)].slice(0, 3).map((x, i) => `<span class="post__pm post__pm--${i}">${x.place}<small>${pad(4 + i * 7)}.06.26</small></span>`).join("");
+  const facts = [...port.notes, ...(p.stitch ? ["tell us: basting stitch or not?"] : [])];
+  const slides = [
+    `<article class="post post--stamp">
+      <div class="post__perf"><div class="post__sheet">
+        <div class="post__row"><span class="post__num">#${pad(n)}</span><span class="t-label">@solae.swim</span></div>
+        <p class="post__name t-fluid" style="--len:${p.short.length}">${p.short}</p>
+        <div class="post__shot">${img(shots[0], 0)}</div>
+        <div class="post__row post__row--foot"><span>${p.name}<b>${inr(p.price)}</b></span><span>drop 01<b>summer 2026</b></span></div>
+      </div></div>
+      <svg class="post__clip" viewBox="0 0 64 72" aria-hidden="true"><path class="post__clip-wire" d="M15 40V12a6 6 0 0 1 12 0V40M37 40V12a6 6 0 0 1 12 0V40"/><path class="post__clip-body" d="M8 34H56L62 68H2Z"/><path class="post__clip-shine" d="M10 40H54"/></svg>
+    </article>`,
+    `<article class="post post--photo">
+      ${img(shots[1] || shots[0], 1)}
+      <div class="post__mast"><p class="t-label">solae · ${port.place}</p><p class="post__script">${port.line[0]}</p><p class="post__caps">${port.line[1]}</p></div>
+      <div class="post__note">${sun}<p>${p.blurb.split(". ")[0].replace(/\.$/, "")}.</p></div>
+    </article>`,
+    `<article class="post post--letter">
+      <div class="post__perf"><div class="post__sheet">
+        <div class="post__marks" aria-hidden="true">${marks}</div>
+        <p class="post__from"><span>a postcard from</span>${port.place}</p>
+        <p class="t-label post__ss">solae · drop 01 · ss'26</p>
+        <p class="post__msg">${p.blurb}</p>
+        <p class="post__box"><span class="t-label">postmarked from</span>${PORTS.slice(1).map(x => x.place).join(" · ")}</p>
+      </div></div>
+      <div class="post__strip">
+        ${[shots[0], shots[1] || shots[0]].map((id, i) => `<div>${img(id, i + 1, 500)}</div>`).join("")}
+        <div><img src="${PX(look.img, 500)}" alt="${look.alt}" loading="lazy" style="object-position:${look.pos}"></div>
+      </div>
+    </article>`,
+    `<article class="post post--brand">
+      <div class="post__stripes"><span class="wordmark">Solae</span><p class="post__tag">made for the sun</p>
+        <svg class="post__paperclip" viewBox="0 0 24 80" aria-hidden="true"><path d="M8 60V14a6 6 0 0 1 12 0v52a10 10 0 0 1-20 0V20"/></svg></div>
+      <div class="post__back">
+        <div class="post__welcome"><p class="post__caps">welcome to your endless summer</p>
+          <div class="post__stamp stamp-wrap"><div class="stamp"><div class="stamp__inner">${img(shots[0], 2, 300)}<p class="t-label">₹ 26 · india</p></div></div></div></div>
+        <p class="post__lede">some suits slip, ride up or show too much. this one stays put.</p>
+        <div class="post__cols">
+          <ul role="list">${facts.map(x => `<li>${x}</li>`).join("")}</ul>
+          <div class="post__lines"><p>thank you for choosing solae.</p><p>we hope this one comes</p><p>on every trip x</p></div>
+        </div>
+        <p class="post__foot"><span>@solae.swim</span><span>${p.type} · ${inr(p.price)}</span></p>
+      </div>
+    </article>`,
+  ];
+
+  pdp.innerHTML = `
+    <div class="stack">
+      <a class="stack__back" href="shop.html#${port.id}" aria-label="back to ${port.place}">${ICON.prev}</a>
+      <p class="stack__where t-label"><svg aria-hidden="true"><use href="#i-boat"/></svg>${port.place}</p>
+      <div class="posts" tabindex="0" role="region" aria-roledescription="carousel" aria-label="postcards of ${p.name}">
+        ${slides.map((s, i) => `<div class="posts__slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}">${s}</div>`).join("")}
+      </div>
+      <div class="stack__bar">
+        <button class="stack__arrow" type="button" data-step="-1" aria-label="previous postcard">${ICON.prev}</button>
+        <div class="stack__dots">${slides.map((_, i) => `<button type="button" data-slide="${i}" aria-label="postcard ${i + 1}"></button>`).join("")}</div>
+        <button class="stack__arrow" type="button" data-step="1" aria-label="next postcard">${ICON.next}</button>
+      </div>
+      <p class="stack__hint t-hand" aria-hidden="true">swipe the postcards</p>
+    </div>
+    <div class="buy" data-buy-panel></div>`;
+
+  const posts = pdp.querySelector(".posts"), dots = [...pdp.querySelectorAll("[data-slide]")];
+  const current = () => Math.round(posts.scrollLeft / posts.clientWidth);
+  const showDot = () => dots.forEach((d, i) => d.setAttribute("aria-current", i === current()));
+  const slideTo = i => posts.scrollTo({ left: Math.max(0, Math.min(slides.length - 1, i)) * posts.clientWidth, behavior: reduceMotion.matches ? "auto" : "smooth" });
+  posts.addEventListener("scroll", () => { cancelAnimationFrame(posts._r); posts._r = requestAnimationFrame(showDot); }, { passive: true });
+  showDot();
+
+  const buy = pdp.querySelector("[data-buy-panel]");
   const render = () => {
     const subtotal = p.price + setRows.reduce((n, r) => n + (setState[r.id].on ? r.price : 0), 0);
-    pdp.innerHTML = `
-    <div class="gallery">
-      <div class="gallery__thumbs" role="group" aria-label="photos">
-        ${p.gallery.map((g, i) => `<button type="button" data-view="${i}" aria-pressed="${i === view}" aria-label="photo ${i + 1}">${photo(p, { id: g, w: 200, alt: "" })}</button>`).join("")}
-      </div>
-      <div class="gallery__main">
-        ${p.badges.map(([t, tone]) => `<span class="badge badge--${tone}">${t}</span>`).join("")}
-        ${photo(p, { id: p.gallery[view], cls: "frame-wavy", w: 1400 })}
-        <p class="t-hand" aria-hidden="true">made to stay put</p>
-      </div>
-    </div>
-    <div class="buy">
+    buy.innerHTML = `
       <div class="buy__title">
-        <p class="t-tag">${p.type} · drop 01</p>
+        <p class="t-tag">${p.type} · ${port.place}</p>
         <h1 class="t-headline">${p.name}</h1>
         <div class="buy__price"><span>${inr(p.price)}</span><span class="stars" aria-label="4.9 out of 5">★★★★★ <span class="t-mute">4.9 · 128 reviews</span></span></div>
       </div>
       <p class="t-lead t-soft">${p.blurb}</p>
       <div class="opt">
-        <div class="opt__label"><span>colour: <b>${C[color].name}</b></span></div>
+        <div class="opt__label"><span>colour: <b>${C[color].name}</b></span>${p.colors.length > 8 ? `<span class="t-mute">${p.colors.length} colours</span>` : ""}</div>
         <div class="swatches" role="radiogroup" aria-label="colour">
           ${p.colors.map(k => `<button type="button" class="swatch swatch--lg" role="radio" aria-checked="${k === color}" aria-label="${C[k].name}" data-color="${k}" style="--c:${dot(k)}"></button>`).join("")}
         </div>
@@ -280,6 +619,13 @@ if (pdp) {
           ${SIZES.map(s => `<button type="button" class="size" role="radio" aria-checked="${s === size}" data-size="${s}">${s.toUpperCase()}</button>`).join("")}
         </div>
       </div>
+      ${p.stitch ? `
+      <div class="opt">
+        <div class="opt__label"><span>down the middle: <b>${stitch}</b></span><span class="t-mute">help us decide</span></div>
+        <div class="chips" role="radiogroup" aria-label="centre seam">
+          ${p.stitch.map(o => `<button type="button" class="chip" role="radio" aria-checked="${o === stitch}" data-stitch="${o}">${o}</button>`).join("")}
+        </div>
+      </div>` : ""}
       ${setRows.length ? `
       <div class="opt">
         <div class="opt__label"><span><b>complete the set</b></span><span class="t-mute">optional</span></div>
@@ -312,35 +658,45 @@ if (pdp) {
       <div class="acc">
         <details open><summary>details</summary><div><ul>
           ${isSuit ? "<li>double-lined, fully opaque when wet</li><li>small removable pads, held in place by a second layer of fabric</li>" : ""}
+          ${p.id === "off-shoulder" ? "<li>off-the-shoulder neckline with a hidden silicone grip</li>" : ""}
+          ${p.stitch ? "<li>flounces on the straps, basting stitch down the middle (or not — your call)</li>" : ""}
           ${p.cat === "shorts" ? "<li>knee-length, or just above — no riding up</li><li>matches every suit, or pick white or black</li>" : ""}
-          ${["cover-ups", "skirts"].includes(p.cat) ? "<li>light, quick-dry woven fabric</li><li>made to wear over your suit on the walk to the beach</li>" : ""}
+          ${p.cat === "cover-ups" ? "<li>light, quick-dry woven fabric</li><li>made to wear over your suit on the walk home</li>" : ""}
+          ${p.cat === "skirts" ? "<li>plain, no print — light, quick-dry woven fabric</li><li>made to wear over your suit on the walk to the beach</li>" : ""}
           <li>78% recycled nylon, 22% elastane</li><li>designed by teens in india</li></ul></div></details>
         <details><summary>fit &amp; pads</summary><div>true to size. if you're between sizes, size up for more coverage. the pads are small and slip out through an inner opening — the second fabric layer keeps them flat and in place while you swim.</div></details>
         <details><summary>care</summary><div>rinse in cool fresh water after every swim. hand wash, dry flat in the shade. no tumble dry, no bleach.</div></details>
         <details><summary>shipping &amp; exchanges</summary><div>ships in 2–4 days across india. free over ${inr(SHIP_FREE)}. unworn pieces with hygiene liner intact can be exchanged within 14 days.</div></details>
-      </div>
-    </div>`;
+      </div>`;
   };
   render();
 
   pdp.addEventListener("click", e => {
     const t = e.target.closest("button, input"); if (!t) return;
-    if (t.dataset.view) view = +t.dataset.view;
-    else if (t.dataset.color) color = t.dataset.color;
+    if (t.dataset.step) return slideTo(current() + +t.dataset.step);
+    if (t.dataset.slide) return slideTo(+t.dataset.slide);
+    if (t.dataset.color) color = t.dataset.color;
     else if (t.dataset.size) size = t.dataset.size;
+    else if (t.dataset.stitch) stitch = t.dataset.stitch;
     else if (t.dataset.set) { setState[t.dataset.set].opt = t.dataset.opt; setState[t.dataset.set].on = true; }
     else if (t.dataset.setOn) setState[t.dataset.setOn].on = t.checked;
     else if (t.matches("[data-fit]")) return toast("size guide coming soon — we're measuring everything twice");
     else if (t.matches("[data-buy]")) {
-      addToCart(p.id, color, size);
+      addToCart(p.id, color, size, stitch);
       setRows.forEach(r => {
         const st = setState[r.id]; if (!st.on) return;
         addToCart(r.id, setColor(r, st.opt), size, st.opt === "matching" ? "matching set" : "");
       });
       return openPanel(".drawer", true);
     } else return;
-    const key = t.dataset.view ? ["view", t.dataset.view] : t.dataset.color ? ["color", t.dataset.color] : t.dataset.size ? ["size", t.dataset.size] : null;
+    const key = t.dataset.color ? ["color", t.dataset.color] : t.dataset.size ? ["size", t.dataset.size] : t.dataset.stitch ? ["stitch", t.dataset.stitch] : null;
     render();
-    if (key) pdp.querySelector(`[data-${key[0]}="${key[1]}"]`)?.focus();
+    if (key) buy.querySelector(`[data-${key[0]}="${key[1]}"]`)?.focus();
   });
+
+  const pairs = document.querySelector("[data-pairs]");
+  if (pairs) {
+    pairs.innerHTML = (isSuit ? ["boardwalk", "drift", "white-one", "shoreline"] : ["tidepool", "cabana", "off-shoulder", "flounce"]).map((id, i) => card(byId(id), i)).join("");
+    reveal(pairs);
+  }
 }

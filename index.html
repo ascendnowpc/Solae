@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.pexels.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Mrs+Saint+Delafield&family=Unbounded:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Mrs+Saint+Delafield&family=Sour+Gummy:ital,wdth,wght@0,125,900;1,125,900&family=Unbounded:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/solae.css">
 </head>
@@ -26,7 +26,7 @@
   <header class="header">
     <div class="wrap header__bar">
       <nav class="nav t-label" aria-label="primary">
-        <a href="#catalog">shop</a><a href="#signatures">signatures</a><a href="#lookbook">lookbook</a>
+        <a href="shop.html">shop</a><a href="#signatures">signatures</a><a href="#lookbook">lookbook</a>
       </nav>
       <button class="icon-btn menu-btn" type="button" data-open-menu aria-label="open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg></button>
       <a class="header__brand" href="index.html" aria-label="SOLAE home"><span class="wordmark">Solae</span></a>
@@ -44,7 +44,7 @@
       <button class="icon-btn" type="button" data-close-menu aria-label="close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     <nav aria-label="mobile">
-      <a href="#catalog" data-close-menu>shop</a><a href="#signatures" data-close-menu>signatures</a><a href="#lookbook" data-close-menu>lookbook</a><a href="#about" data-close-menu>about</a>
+      <a href="shop.html" data-close-menu>shop</a><a href="#signatures" data-close-menu>signatures</a><a href="#lookbook" data-close-menu>lookbook</a><a href="#about" data-close-menu>about</a>
     </nav>
     <p class="t-hand">by teens, for teens</p>
     <div class="mobile-nav__stripe"></div>
@@ -75,7 +75,7 @@
           <div class="frame"><img src="https://images.pexels.com/photos/32181630/pexels-photo-32181630.jpeg?auto=compress&cs=tinysrgb&w=900" alt="a girl in heart sunglasses peeking through a sprinkle-donut pool float"></div>
           <p>plain, double-lined one-pieces with removable pads, knee-length shorts that match, and cover-ups for the walk home. designed by teens, for teens.</p>
           <div class="hero__ctas">
-            <a class="btn" href="#catalog">shop drop 01</a>
+            <a class="btn" href="shop.html">shop drop 01</a>
             <a class="btn btn--ghost" href="#about">our story</a>
           </div>
         </aside>
@@ -111,7 +111,11 @@
         <button type="button" data-filter="skirts" aria-pressed="false" style="left:72%;top:26%">the skirt</button>
         <a href="#signatures" class="sr-only">see the signature styles</a>
       </div>
-      <div class="grid-products" data-products></div>
+      <div class="grid-products" data-products="tidepool,cabana,shallows,off-shoulder,boardwalk,drift,white-one,shoreline"></div>
+      <div class="catalog__more">
+        <p class="t-hand" aria-hidden="true">there's a map for that</p>
+        <a class="btn btn--ink" href="shop.html">open the shop map</a>
+      </div>
     </section>
 
     <!-- 4 · Lookbook sheet — pin: "the late checkout" lower spread -->
@@ -296,7 +300,7 @@
     <div class="footer__card">
       <div class="footer__grid">
         <nav class="footer__links" aria-label="shop">
-          <p class="t-label">shop</p><a href="#catalog">swimsuits</a><a href="#catalog">matching shorts</a><a href="#catalog">cover-ups</a><a href="#signatures">signatures</a>
+          <p class="t-label">shop</p><a href="shop.html#swimsuits">swimsuits</a><a href="shop.html#signatures">signatures</a><a href="shop.html#shorts">matching shorts</a><a href="shop.html#cover-ups">cover-ups</a><a href="shop.html#skirts">the skirt</a>
         </nav>
         <nav class="footer__links" aria-label="help">
           <p class="t-label">help</p><a href="#">size guide</a><a href="#">shipping</a><a href="#">exchanges</a><a href="#">contact</a>

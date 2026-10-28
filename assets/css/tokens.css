@@ -65,6 +65,7 @@
   --font-body:     "Inter", "TT Turns", system-ui, sans-serif;            /* SKIMS body */
   --font-serif:    "Instrument Serif", "Times New Roman", serif;           /* wordmark + captions */
   --font-script:   "Mrs Saint Delafield", "Brush Script MT", cursive;      /* handwritten notes */
+  --font-fluid:    "Sour Gummy", "Unbounded", "Arial Black", sans-serif;   /* gooey wide display (SKIMS, "your hair is thirsty") */
 
   /* Fluid type scale — 360px → 1440px viewport */
   --fs-mega:    clamp(3rem,     1.4rem + 7.1vw,  7.75rem);
