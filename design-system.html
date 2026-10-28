@@ -7,7 +7,7 @@
   <meta name="description" content="Tokens, type, motifs and components for the SOLAE swim storefront.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Mrs+Saint+Delafield&family=Unbounded:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Mrs+Saint+Delafield&family=Sour+Gummy:ital,wdth,wght@0,125,900;1,125,900&family=Unbounded:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/solae.css">
   <style>
@@ -158,7 +158,7 @@
     <section id="type" class="ds-sec">
       <div class="ds-sec__head">
         <div><p class="num">03</p><h2 class="t-headline t-display">type</h2></div>
-        <p>Five roles, each with one job. k2o's <b>Moslin</b> and <b>TT Turns</b> are commercial fonts you have to license, so free Google stand-ins are in place for now. The real names come first in every font stack, so once you license and self-host a font, it takes over automatically. <b>Inter</b> is SKIMS' actual body font, and it's free.</p>
+        <p>Six roles, each with one job. k2o's <b>Moslin</b> and <b>TT Turns</b> are commercial fonts you have to license, so free Google stand-ins are in place for now. The real names come first in every font stack, so once you license and self-host a font, it takes over automatically. <b>Inter</b> is SKIMS' actual body font, and it's free.</p>
       </div>
 
       <div class="fam">
@@ -185,6 +185,12 @@
         <div><p class="t-eyebrow t-soft">handwriting · from the pins</p>
           <dl><dt>in use</dt><dd>Mrs Saint Delafield</dd><dt>token</dt><dd><code class="inline">--font-script</code></dd><dt>use</dt><dd>short notes only ("it's about", "scroll down to explore"), 2–5 words, never for anything users must read</dd></dl></div>
         <p class="fam__spec t-hand" style="font-size:clamp(3rem,2rem + 4vw,5.5rem);color:var(--brick)">scroll down to explore</p>
+      </div>
+
+      <div class="fam">
+        <div><p class="t-eyebrow t-soft">fluid display · from SKIMS + "your hair is thirsty"</p>
+          <dl><dt>in use</dt><dd>Sour Gummy 900 at 125% width, melted by the <code class="inline">#f-fluid</code> SVG filter</dd><dt>token</dt><dd><code class="inline">--font-fluid</code> · <code class="inline">.t-fluid</code></dd><dt>use</dt><dd>the shop title, port names, the product name on the stamp postcard · lowercase · ocean on sand · 2.5rem and up only, the melt gets crunchy below that</dd></dl></div>
+        <p class="fam__spec t-fluid" style="font-size:clamp(2.8rem,2rem + 3.4vw,5rem);color:var(--ocean)">the shop</p>
       </div>
 
       <p class="ds-sub">fluid scale · 360px → 1440px · resize the window to watch it change</p>
@@ -299,6 +305,9 @@
           <tr><td>about us</td><td>SUIT taplink</td><td>wide caps title, alternating wavy-framed photos, squiggle + italic labels, palm leaf watermark</td></tr>
           <tr><td>sun &amp; salt</td><td>sea &amp; soil</td><td>full-bleed water photo, huge spaced wide caps, vertical 'and' around a wave glyph</td></tr>
           <tr><td>on the shore</td><td>k2o + surf shop</td><td>staggered soft-framed UGC tiles with handle chips</td></tr>
+          <tr><td>shop · sea chart</td><td>freepik treasure map + the ship photo</td><td>islands and contour lines only, no frame: one island per category, a dotted sea lane, port signs and sticky port tabs. the boat sails the short way round in under a second and leaves a coral trail</td></tr>
+          <tr><td>shop · port panel</td><td>k2o + SUIT taplink</td><td>the place name in fluid type, the plain category name, a one-line definition and note chips, then the landing page's wavy product cards</td></tr>
+          <tr><td>product · postcards</td><td>caprini, lemon stripe short, a postcard from summer, built for warm days</td><td>a swipeable stack on brand-blue water: perforated stamp with a binder clip, full photo with a pinned note, photo strip with postmarks, striped welcome card</td></tr>
           <tr><td>footer</td><td>k2o</td><td>rounded deep-teal card, link columns, newsletter pill, oversized wordmark, script sign-off, stripe band</td></tr>
         </tbody>
       </table></div>
